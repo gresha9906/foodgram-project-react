@@ -1,0 +1,64 @@
+@adminToken = Здесь указать полученный токен
+
+# get запрос всех пользователей
+GET http://localhost:8000/api/users/
+###
+GET http://localhost:8000/api/tags/
+###
+GET http://localhost:8000/api/ingredients/
+###
+# post запрос на создание пользователя
+POST http://localhost:8000/api/users/
+Content-Type: application/json
+
+{
+  "email": "vpupkin12@yandex.ru",
+  "username": "vasya12.pupkin",
+  "first_name": "Вася12",
+  "last_name": "Пупкин12",
+  "password": "Qwerty123"
+}
+###
+
+POST http://localhost:8000/api/users/
+Content-Type: application/json
+
+{
+  "email": "123@yandex.ru",
+  "username": "asx.pupkin",
+  "first_name": "Вася12",
+  "last_name": "Пупкин12",
+  "password": "Qwerty123"
+}
+###
+# get запрос профиля пользователя
+GET http://localhost:8000/api/users/2/
+###
+# get запрос текущий пользователь
+GET http://localhost:8000/api/users/me/
+Authorization: Token {{adminToken}}
+###
+POST http://localhost:8000/api/auth/token/login/
+Content-Type: application/json
+
+{
+    "email": "admin@admin.ru",
+    "password": "admin"
+}
+###
+POST http://localhost:8000/api/auth/token/login/
+Content-Type: application/json
+
+{
+    "email": "123@yandex.ru",
+    "password": "Qwerty123"
+}
+###
+POST http://localhost/api/recipes/1/favorite/
+Content-Type: application/json
+
+###
+Authorization: Token {{adminToken}}
+###
+GET http://localhost/api/recipes/
+###
