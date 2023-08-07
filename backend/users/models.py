@@ -64,6 +64,7 @@ class Subscribe(models.Model):
     )
 
     class Meta:
+        ordering = ['-author_id']
         verbose_name = 'Подписка на авторов'
         verbose_name_plural = 'Подписка на авторов'
         constraints = [

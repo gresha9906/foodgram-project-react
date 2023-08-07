@@ -1,6 +1,8 @@
-from django.core.validators import MinValueValidator, RegexValidator
+from django.core.validators import (MaxValueValidator, MinValueValidator,
+                                    RegexValidator)
 from django.db import models
 
+from foodgram.settings import MAX_VALUE, MIN_VALUE
 from users.models import CustomUser
 
 LENGTH_MAX = 200
@@ -26,8 +28,12 @@ class IngredientImport(models.Model):
     date_add = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        ordering = ['date_add']
         verbose_name = 'История импорта'
         verbose_name_plural = 'История импорта'
+
+    def __str__(self):
+        return f'{self.csv_file} - {self.date_add}'
 
 
 class Tag(models.Model):
@@ -45,6 +51,7 @@ class Tag(models.Model):
     slug = models.SlugField('Слаг тега', unique=True, null=True)
 
     class Meta:
+        ordering = ['name']
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
 
@@ -64,8 +71,12 @@ class Recipe(models.Model):
     tags = models.ManyToManyField(
         Tag, blank=True, verbose_name='Тег в рецепте', related_name='tag'
     )
-    time_to_cook = models.IntegerField(
-        'Время приготовления, в минутах', validators=[MinValueValidator(1)]
+    time_to_cook = models.PositiveSmallIntegerField(
+        'Время приготовления, в минутах',
+        validators=[
+            MinValueValidator(MIN_VALUE),
+            MaxValueValidator(MAX_VALUE),
+        ],
     )
     author = models.ForeignKey(
         CustomUser,
@@ -89,13 +100,18 @@ class Recipe(models.Model):
 
 
 class IngredientsInRecipe(models.Model):
-    amount = models.PositiveIntegerField(
-        'Количество', validators=[MinValueValidator(1)]
+    amount = models.PositiveSmallIntegerField(
+        'Количество',
+        validators=[
+            MinValueValidator(MIN_VALUE),
+            MaxValueValidator(MAX_VALUE),
+        ],
     )
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
 
     class Meta:
+        ordering = ['recipe']
         verbose_name = 'Ингредиенты в рецепте'
         verbose_name_plural = 'Ингредиенты в рецепте'
         constraints = [
@@ -125,6 +141,7 @@ class ShoppingList(models.Model):
     )
 
     class Meta:
+        ordering = ['recipe']
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Список покупок'
         constraints = [
@@ -149,6 +166,7 @@ class Favourite(models.Model):
     )
 
     class Meta:
+        ordering = ['recipe']
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранное'
         constraints = [

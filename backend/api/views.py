@@ -11,7 +11,6 @@ from rest_framework.response import Response
 from recipes.models import (Favourite, Ingredient, IngredientsInRecipe, Recipe,
                             ShoppingList, Tag)
 from users.models import CustomUser, Subscribe
-
 from .filters import RecipeFilter
 from .permissions import IsAuthorOrReadOnly
 from .renderers import CSVDataRenderer, TextDataRenderer
@@ -68,15 +67,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['POST', 'DELETE'])
     def favorite(self, request, **kwargs):
         recipe = get_object_or_404(Recipe, id=kwargs['pk'])
-        if request.method == 'POST':
-            serializer = self.get_serializer(recipe)
-            Favourite.objects.create(user=request.user, recipe=recipe)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
         if request.method == 'DELETE':
             get_object_or_404(
                 Favourite, user=request.user, recipe=recipe
             ).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
+        serializer = self.get_serializer(recipe)
+        Favourite.objects.create(user=request.user, recipe=recipe)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @action(
         detail=True,
@@ -84,16 +82,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def shopping_cart(self, request, **kwargs):
         recipe = get_object_or_404(Recipe, id=kwargs['pk'])
-        if request.method == 'POST':
-            serializer = self.get_serializer(recipe)
-            ShoppingList.objects.create(user=request.user, recipe=recipe)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
         if request.method == 'DELETE':
             get_object_or_404(
                 ShoppingList, user=request.user, recipe=recipe
             ).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
+        serializer = self.get_serializer(recipe)
+        ShoppingList.objects.create(user=request.user, recipe=recipe)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @action(
         detail=False,
@@ -197,20 +193,14 @@ class UserViewSet(
     )
     def subscribe(self, request, **kwargs):
         author = get_object_or_404(CustomUser, id=kwargs['pk'])
-        print(get_object_or_404(CustomUser, id=kwargs['pk']))
-
-        if request.method == 'POST':
-            serializer = SubscribeSerializer(
-                author, data=request.data, context={'request': request}
-            )
-            serializer.is_valid(raise_exception=True)
-            Subscribe.objects.create(user=request.user, author=author)
-            print(request.user)
-            print(author)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
         if request.method == 'DELETE':
             get_object_or_404(
                 Subscribe, user=request.user, author=author
             ).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
+        serializer = SubscribeSerializer(
+            author, data=request.data, context={'request': request}
+        )
+        serializer.is_valid(raise_exception=True)
+        Subscribe.objects.create(user=request.user, author=author)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

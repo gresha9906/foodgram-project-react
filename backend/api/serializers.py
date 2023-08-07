@@ -2,9 +2,10 @@ from django.contrib.auth.password_validation import validate_password
 from drf_base64.fields import Base64ImageField
 from rest_framework import serializers
 
+from foodgram.settings import MAX_VALUE, MIN_VALUE
 from recipes.models import (Favourite, Ingredient, IngredientsInRecipe, Recipe,
                             ShoppingList, Tag)
-from users.models import CustomUser, Subscribe
+from users.models import CustomUser
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -51,9 +52,7 @@ class UserListSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         if self.context['request'].user.is_authenticated:
-            return Subscribe.objects.filter(
-                user=self.context['request'].user, author=obj
-            ).exists()
+            return obj.subscribing.exists()
         return False
 
 
@@ -132,16 +131,12 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def get_is_favorited(self, obj):
         if self.context['request'].user.is_authenticated:
-            return Favourite.objects.filter(
-                user=self.context['request'].user, recipe=obj
-            ).exists()
+            return obj.favourite_recipe.exists()
         return 'Доступно только авторизованному пользователю'
 
     def get_is_in_shopping_cart(self, obj):
         if self.context['request'].user.is_authenticated:
-            return ShoppingList.objects.filter(
-                user=self.context['request'].user, recipe=obj
-            ).exists()
+            return obj.shopping_recipe.exists()
         return 'Доступно только авторизованному пользователю'
 
 
@@ -149,6 +144,7 @@ class IngredientsInRecipeCreate(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(
         source='ingredient', queryset=Ingredient.objects.all()
     )
+    amount = serializers.IntegerField(max_value=MAX_VALUE, min_value=MIN_VALUE)
 
     class Meta:
         model = IngredientsInRecipe
@@ -156,7 +152,9 @@ class IngredientsInRecipeCreate(serializers.ModelSerializer):
 
 
 class RecipeCreateSerializer(serializers.ModelSerializer):
-    cooking_time = serializers.IntegerField(source='time_to_cook')
+    cooking_time = serializers.IntegerField(
+        source='time_to_cook', max_value=MAX_VALUE, min_value=MIN_VALUE
+    )
     text = serializers.CharField(source='description')
     ingredients = IngredientsInRecipeCreate(many=True)
     image = Base64ImageField()
@@ -192,7 +190,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        IngredientsInRecipe.objects.filter(recipe=instance).delete()
+        instance.ingredientsinrecipe_set.all().delete()
         ingredients = validated_data.pop('ingredients')
         self.create_ingredients(instance, ingredients)
         return super().update(instance, validated_data)
@@ -241,9 +239,7 @@ class SubscribeSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         if self.context['request'].user.is_authenticated:
-            return Subscribe.objects.filter(
-                user=self.context['request'].user, author=obj
-            ).exists()
+            return obj.subscribing.exists()
         return False
 
     def get_recipes_count(self, obj):
