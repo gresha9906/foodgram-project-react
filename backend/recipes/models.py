@@ -1,5 +1,8 @@
-from django.core.validators import (MaxValueValidator, MinValueValidator,
-                                    RegexValidator)
+from django.core.validators import (
+    MaxValueValidator,
+    MinValueValidator,
+    RegexValidator,
+)
 from django.db import models
 
 from foodgram.settings import MAX_VALUE, MIN_VALUE
@@ -85,7 +88,7 @@ class Recipe(models.Model):
         verbose_name='Автор',
         null=True,
     )
-    image = models.ImageField(upload_to='recipes/', blank=True, default=None)
+    image = models.ImageField(blank=True, default=None)
     pub_date = models.DateTimeField(
         'Дата публикации рецепта', auto_now_add=True
     )
