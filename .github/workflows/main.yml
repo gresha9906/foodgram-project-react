@@ -76,6 +76,7 @@ jobs:
     - name: Install dependencies
       run: |
         cd frontend/
+        npm install --package-lock-only
         npm ci
     - name: Test frontend
       run: |
