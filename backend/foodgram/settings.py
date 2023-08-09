@@ -14,7 +14,7 @@ SECRET_KEY = os.getenv('SECRET_ KEY', 'DEFAULT_ KEY')
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['host.docker.internal', 'localhost']
+ALLOWED_HOSTS = ['localhost', 'final-project.myddns.me']
 
 
 INSTALLED_APPS = [
@@ -69,9 +69,9 @@ WSGI_APPLICATION = 'foodgram.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('POSGRES_DB'),
-        'USER': os.getenv('POSGRES_USER'),
-        'PASSWORD': os.getenv('POSGRES_PASSWORD'),
+        'NAME': os.getenv('POSTGRES_DB'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
         'HOST': os.getenv('DB_HOST'),
         'PORT': '5432',
     }
@@ -125,9 +125,9 @@ USE_TZ = True
 
 
 STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'static'
+STATIC_ROOT = BASE_DIR / 'collected_static'
 
-MEDIA_URL = '/media/'
+MEDIA_URL = '/app/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
