@@ -136,7 +136,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.CustomUser'
 
 DJOSER = {'LOGIN_FIELD': 'email'}
-
+CSRF_TRUSTED_ORIGINS = ['https://final-project.myddns.me/']
 # CORS_ORIGIN_ALLOW_ALL = True
 CORS_URLS_REGEX = r'^/api/.*$'
 CORS_ALLOWED_ORIGINS = [
