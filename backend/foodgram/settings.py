@@ -14,7 +14,7 @@ SECRET_KEY = os.getenv('SECRET_ KEY', 'DEFAULT_ KEY')
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'final-project.myddns.me']
+ALLOWED_HOSTS = ['localhost', 'final-project.myddns.me', '127.0.0.1']
 
 
 INSTALLED_APPS = [
@@ -73,6 +73,7 @@ DATABASES = {
         'USER': os.getenv('POSTGRES_USER'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
         'HOST': os.getenv('DB_HOST', ''),
+        # 'HOST': 'localhost',
         'PORT': '5432',
     }
 }
@@ -103,8 +104,8 @@ AUTH_PASSWORD_VALIDATORS = [
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'api.custompaginator.CustomPaginator',
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
-        # 'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
@@ -137,7 +138,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.CustomUser'
 
 DJOSER = {'LOGIN_FIELD': 'email'}
-CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*']
+CSRF_TRUSTED_ORIGINS = [
+    'http://*',
+    'https://*',
+    'https://final-project.myddns.me/',
+    'http://final-project.myddns.me/',
+]
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_URLS_REGEX = r'^/api/.*$'
 # CORS_ALLOWED_ORIGINS = [
