@@ -1,5 +1,5 @@
 ## For the Review:
-### domain: http://final-project.myddns.me
+### domain: final-project.myddns.me
 ### Auth information for test project:
 #### login: *admin@ad.ru*
 #### password: *admin*
