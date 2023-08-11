@@ -15,7 +15,7 @@ SECRET_KEY = os.getenv('SECRET_ KEY', 'DEFAULT_ KEY')
 DEBUG = bool(os.getenv('DEBUG', ''))
 
 # ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
-ALLOWED_HOSTS = ['localhost', 'final-project.myddns.me', '127.0.0.1']
+ALLOWED_HOSTS = ['final-project.myddns.me']
 
 
 INSTALLED_APPS = [
