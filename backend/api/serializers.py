@@ -3,8 +3,14 @@ from drf_base64.fields import Base64ImageField
 from rest_framework import serializers
 
 from foodgram.settings import MAX_VALUE, MIN_VALUE
-from recipes.models import (Favourite, Ingredient, IngredientsInRecipe, Recipe,
-                            ShoppingList, Tag)
+from recipes.models import (
+    Favourite,
+    Ingredient,
+    IngredientsInRecipe,
+    Recipe,
+    ShoppingList,
+    Tag,
+)
 from users.models import CustomUser
 
 
@@ -131,12 +137,16 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def get_is_favorited(self, obj):
         if self.context['request'].user.is_authenticated:
-            return obj.favourite_recipe.exists()
+            return obj.favourite_recipe.filter(
+                user=self.context['request'].user
+            ).exists()
         return 'Доступно только авторизованному пользователю'
 
     def get_is_in_shopping_cart(self, obj):
         if self.context['request'].user.is_authenticated:
-            return obj.shopping_recipe.exists()
+            return obj.shopping_recipe.filter(
+                user=self.context['request'].user
+            ).exists()
         return 'Доступно только авторизованному пользователю'
 
 
